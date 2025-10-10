@@ -28,7 +28,8 @@
     "typescript": "^5.9.3"
   },
   "dependencies": {
-    "@prisma/client": "^6.17.0"
+    "@prisma/client": "^6.17.0",
+    "zod": "^4.1.12"
   },
   "prisma": {
     "seed": "ts-node prisma/seed.ts"
