@@ -13,3 +13,181 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id       String @id @default(uuid()) @db.Char(36)
+  name     String
+  email    String
+  password String
+  photo    String
+
+  //
+  role                 Role?
+  rooms                Room[]          @relation("UserCreateRelation")
+  room_members         RoomMember[]
+  messages             RoomMessage[]   @relation("UserSenderRelation")
+  owner_transactions   Transaction[]   @relation("OwnerTransactionRelation")
+  member_transactionss Transaction[]   @relation("MemberTransactionRelation")
+  password_resets      PasswordReset[]
+  payouts              Payout[]
+
+  @@map("Users")
+}
+
+enum RoleType {
+  ADMIN
+  USER
+  MEMBER
+  OTHER
+}
+
+model Role {
+  id     String   @id @default(uuid()) @db.Char(36)
+  role   RoleType
+  //
+  UserId String   @unique
+  user   User     @relation(fields: [UserId], references: [id])
+
+  room_members RoomMember[]
+
+  @@map("Roles")
+}
+
+enum GroupType {
+  FREE
+  PAID
+}
+
+model Group {
+  id           String        @id @default(uuid()) @db.Char(36)
+  name         String
+  photo        String
+  type         GroupType
+  about        String        @db.Text
+  benefit      String[]
+  price        Int
+  created_at   DateTime      @default(now())
+  //
+  RoomId       String
+  room         Room          @relation(fields: [RoomId], references: [id])
+  //
+  assets       GroupAsset[]
+  transactions Transaction[]
+
+  @@map("Groups")
+}
+
+model GroupAsset {
+  id       String @id @default(uuid()) @db.Char(36)
+  filename String
+  //
+  GroupId  String
+  group    Group  @relation(fields: [GroupId], references: [id])
+
+  @@map("GroupAssets")
+}
+
+model Room {
+  id         String   @id @default(uuid()) @db.Char(36)
+  name       String? //optional
+  is_group   Boolean  @default(false) //default false
+  created_at DateTime @default(now())
+  //
+  CreatorId  String
+  creator    User     @relation("UserCreateRelation", fields: [CreatorId], references: [id])
+  //
+
+  groups       Group[]
+  room_members RoomMember[]
+  messages     RoomMessage[]
+
+  @@map("Rooms")
+}
+
+model RoomMember {
+  id        String   @id @default(uuid()) @db.Char(36)
+  joined_at DateTime
+
+  RoomId String
+  room   Room   @relation(fields: [RoomId], references: [id])
+
+  UserId String
+  member User   @relation(fields: [UserId], references: [id])
+
+  RoleId String
+  role   Role   @relation(fields: [RoleId], references: [id])
+
+  @@map("RoomMembers")
+}
+
+enum MessageType {
+  TEXT
+  IMAGE
+}
+
+model RoomMessage {
+  id String @id @default(uuid()) @db.Char(36)
+
+  content    String
+  type       MessageType
+  created_at DateTime
+
+  RoomId String
+  room   Room   @relation(fields: [RoomId], references: [id])
+
+  SenderId String
+  sender   User   @relation("UserSenderRelation", fields: [SenderId], references: [id])
+
+  @@map("RoomMesages")
+}
+
+model PasswordReset {
+  id    String @id @default(uuid()) @db.Char(36)
+  token String
+
+  UserId String
+  user   User   @relation(fields: [UserId], references: [id])
+
+  @@map("PasswordResets")
+}
+
+enum TransactionType {
+  PENDING
+  SUCCESS
+  FAILED
+}
+
+model Transaction {
+  id String @id @default(uuid()) @db.Char(36)
+
+  price      Int
+  type       TransactionType? @default(PENDING) // default pending
+  created_at DateTime
+
+  OwnerId String
+  owner   User   @relation("OwnerTransactionRelation", fields: [OwnerId], references: [id])
+
+  UserId String
+  user   User   @relation("MemberTransactionRelation", fields: [UserId], references: [id])
+
+  GroupId String
+  group   Group  @relation(fields: [GroupId], references: [id])
+
+  @@map("Transactions")
+}
+
+model Payout {
+  id                  String           @id @default(uuid()) @db.Char(36)
+  amount              Int
+  bank_name           String
+  bank_account_number String
+  bank_account_name   String
+  proof               String
+  status              TransactionType? @default(PENDING) //default pending
+  created_at          DateTime
+
+  UserId String
+  user   User   @relation(fields: [UserId], references: [id])
+
+  @@map("Payouts")
+}
