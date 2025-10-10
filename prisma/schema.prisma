@@ -162,7 +162,7 @@ model Transaction {
 
   price      Int
   type       TransactionType? @default(PENDING) // default pending
-  created_at DateTime
+  created_at DateTime         @default(now())
 
   OwnerId String
   owner   User   @relation("OwnerTransactionRelation", fields: [OwnerId], references: [id])
@@ -182,9 +182,9 @@ model Payout {
   bank_name           String
   bank_account_number String
   bank_account_name   String
-  proof               String
+  proof               String?          @db.Text
   status              TransactionType? @default(PENDING) //default pending
-  created_at          DateTime
+  created_at          DateTime         @default(now())
 
   UserId String
   user   User   @relation(fields: [UserId], references: [id])
