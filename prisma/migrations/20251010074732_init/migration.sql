@@ -1,5 +1,5 @@
 -- CreateEnum
-CREATE TYPE "RoleType" AS ENUM ('ADMIN', 'USER', 'MEMBER', 'OTHER');
+CREATE TYPE "RoleType" AS ENUM ('ADMIN', 'USER', 'MEMBER', 'OWNER');
 
 -- CreateEnum
 CREATE TYPE "GroupType" AS ENUM ('FREE', 'PAID');
@@ -17,6 +17,7 @@ CREATE TABLE "Users" (
     "email" TEXT NOT NULL,
     "password" TEXT NOT NULL,
     "photo" TEXT NOT NULL,
+    "RoleId" TEXT NOT NULL,
 
     CONSTRAINT "Users_pkey" PRIMARY KEY ("id")
 );
@@ -25,7 +26,6 @@ CREATE TABLE "Users" (
 CREATE TABLE "Roles" (
     "id" CHAR(36) NOT NULL,
     "role" "RoleType" NOT NULL,
-    "UserId" TEXT NOT NULL,
 
     CONSTRAINT "Roles_pkey" PRIMARY KEY ("id")
 );
@@ -126,10 +126,10 @@ CREATE TABLE "Payouts" (
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Roles_UserId_key" ON "Roles"("UserId");
+CREATE UNIQUE INDEX "Users_RoleId_key" ON "Users"("RoleId");
 
 -- AddForeignKey
-ALTER TABLE "Roles" ADD CONSTRAINT "Roles_UserId_fkey" FOREIGN KEY ("UserId") REFERENCES "Users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Users" ADD CONSTRAINT "Users_RoleId_fkey" FOREIGN KEY ("RoleId") REFERENCES "Roles"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Groups" ADD CONSTRAINT "Groups_RoomId_fkey" FOREIGN KEY ("RoomId") REFERENCES "Rooms"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

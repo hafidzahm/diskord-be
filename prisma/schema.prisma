@@ -6,7 +6,6 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
 }
 
 datasource db {
@@ -22,7 +21,9 @@ model User {
   photo    String
 
   //
-  role                 Role?
+  RoleId String @unique
+  role   Role   @relation(fields: [RoleId], references: [id])
+
   rooms                Room[]          @relation("UserCreateRelation")
   room_members         RoomMember[]
   messages             RoomMessage[]   @relation("UserSenderRelation")
@@ -38,17 +39,16 @@ enum RoleType {
   ADMIN
   USER
   MEMBER
-  OTHER
+  OWNER
 }
 
 model Role {
-  id     String   @id @default(uuid()) @db.Char(36)
-  role   RoleType
+  id   String   @id @default(uuid()) @db.Char(36)
+  role RoleType
   //
-  UserId String   @unique
-  user   User     @relation(fields: [UserId], references: [id])
 
   room_members RoomMember[]
+  User         User?
 
   @@map("Roles")
 }
