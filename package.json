@@ -29,6 +29,8 @@
   },
   "dependencies": {
     "@prisma/client": "^6.17.0",
+    "@types/multer": "^2.0.0",
+    "multer": "^2.0.2",
     "zod": "^4.1.12"
   },
   "prisma": {
