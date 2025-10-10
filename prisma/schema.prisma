@@ -38,7 +38,7 @@ enum RoleType {
   ADMIN
   USER
   MEMBER
-  OTHER
+  OWNER
 }
 
 model Role {
