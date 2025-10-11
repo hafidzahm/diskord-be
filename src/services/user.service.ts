@@ -1,5 +1,8 @@
 import "multer"; // This loads the global types
-import type { SignUpSchemaType } from "../utils/schema/user.schema.ts";
+import type {
+  SignInSchemaType,
+  SignUpSchemaType,
+} from "../utils/schema/user.schema.ts";
 import UserRepositories from "../repositories/user.repositories.ts";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
@@ -40,6 +43,18 @@ class UserService {
       photo: user.photo_url,
       access_token,
     };
+  }
+
+  static async signIn(data: SignInSchemaType) {
+    const isEmailExist = await UserRepositories.isEmailExist(data.email);
+    //cek apakah email yang diinputkan user ada dan dicount
+    if (isEmailExist === 0) {
+      throw {
+        type: "AuthenticationError",
+        success: false,
+        message: "Invalid email/ password",
+      };
+    }
   }
 }
 
