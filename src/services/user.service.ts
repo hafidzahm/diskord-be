@@ -47,8 +47,12 @@ class UserService {
 
   static async signIn(data: SignInSchemaType) {
     const isEmailExist = await UserRepositories.isEmailExist(data.email);
+    console.log(isEmailExist, "<--- emailFoundCount");
+
     //cek apakah email yang diinputkan user ada dan dicount
     if (isEmailExist === 0) {
+      console.log("Inputted email not found");
+
       throw {
         type: "AuthenticationError",
         success: false,
@@ -66,6 +70,8 @@ class UserService {
     );
 
     if (!comparePassword) {
+      console.log("Invalid password");
+
       throw {
         type: "AuthenticationError",
         success: false,
