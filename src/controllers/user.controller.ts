@@ -2,6 +2,7 @@ import type { NextFunction, Request, Response } from "express";
 import { SignUpSchema } from "../utils/schema/user.schema.ts";
 import fs from "fs";
 import UserService from "../services/user.service.ts";
+import deletePhoto from "../utils/deletePhoto.ts";
 
 class UserController {
   static async signUp(req: Request, res: Response, next: NextFunction) {
@@ -21,12 +22,14 @@ class UserController {
       if (!parse.success) {
         const errorMessages = parse.error.issues.map(
           (err) => `${err.path} - ${err.message}`
+          // name - name must string
         );
 
         // hapus file yang terupload
-        fs.unlinkSync(req.file.path);
+        // fs.unlinkSync(req.file.path);
 
-        // name - name must string
+        deletePhoto(req.file.path);
+
         throw {
           type: "ZodValidationError",
           success: false,

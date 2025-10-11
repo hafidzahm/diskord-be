@@ -7,8 +7,14 @@ import jwt from "jsonwebtoken";
 class UserService {
   static async signUp(data: SignUpSchemaType, file: Express.Multer.File) {
     const isEmailExist = await UserRepositories.isEmailExist(data.email);
-    if (isEmailExist > 1) {
-      throw new Error("Email must be unique");
+    console.log(isEmailExist, "<--- emailCount");
+
+    if (isEmailExist > 0) {
+      throw {
+        type: "BadRequest",
+        success: false,
+        message: "Email must be unique",
+      };
     }
 
     const user = await UserRepositories.createUser(
