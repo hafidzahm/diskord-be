@@ -44,6 +44,15 @@ export default function errorHandler(
     });
   }
 
+  if ((err as ErrorClientType).type === "AuthenticationError") {
+    console.log("===AuthenticationError===");
+    return res.status(401).json({
+      success: (err as ErrorClientType).success,
+      message: (err as ErrorClientType).message,
+      details: (err as ErrorClientType).details,
+    });
+  }
+
   return res.status(500).json({
     success: false,
     message: catchError?.message ?? "Internal server error",
