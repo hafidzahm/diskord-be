@@ -1,9 +1,9 @@
-const express = require("express");
+import express from "express";
 import type { Request, Response } from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
-import userRoutes from "./routes/user.routes.js";
-import errorHandler from "./middlewares/errorHandler.js";
+import userRoutes from "./routes/user.routes.ts";
+import errorHandler from "./middlewares/errorHandler.ts";
 const app = express();
 const port = 3000;
 
