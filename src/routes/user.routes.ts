@@ -19,3 +19,5 @@ userRoutes.post(
   uploadPhoto.single("photo"),
   UserController.signUp
 );
+
+export default userRoutes;
