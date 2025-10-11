@@ -70,6 +70,13 @@ class UserController {
         details: errorMessages,
       };
     }
+
+    const userSignIn = await UserService.signIn(validatedData.data);
+    return res.status(200).json({
+      success: true,
+      message: "Sign-in success",
+      data: userSignIn,
+    });
   }
 }
 
