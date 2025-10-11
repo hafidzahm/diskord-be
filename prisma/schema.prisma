@@ -21,7 +21,7 @@ model User {
   photo    String
 
   //
-  RoleId String @unique
+  RoleId String
   role   Role   @relation(fields: [RoleId], references: [id])
 
   rooms                Room[]          @relation("UserCreateRelation")
@@ -48,7 +48,7 @@ model Role {
   //
 
   room_members RoomMember[]
-  User         User?
+  User         User[]
 
   @@map("Roles")
 }
