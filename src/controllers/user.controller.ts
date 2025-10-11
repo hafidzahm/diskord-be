@@ -28,7 +28,7 @@ class UserController {
 
         // name - name must string
         throw {
-          type: "BadRequest",
+          type: "ZodValidationError",
           success: false,
           message: "Validation error",
           details: errorMessages,
