@@ -20,4 +20,6 @@ userRoutes.post(
   UserController.signUp
 );
 
+userRoutes.post("/auth/sign-in", UserController.signIn);
+
 export default userRoutes;
