@@ -55,6 +55,39 @@ class UserService {
         message: "Invalid email/ password",
       };
     }
+    //cek user dari email yang ditemukan
+    const findedUserByEmail = await UserRepositories.findUserByEmail(
+      data.email
+    );
+    //bandingkan password db dgn password yg diinput
+    const comparePassword = bcrypt.compareSync(
+      data.password,
+      findedUserByEmail.password
+    );
+
+    if (!comparePassword) {
+      throw {
+        type: "AuthenticationError",
+        success: false,
+        message: "Invalid email/ password",
+      };
+    }
+
+    const access_token = jwt.sign(
+      { id: findedUserByEmail.id },
+      process.env.SECRET_AUTH as string,
+      {
+        expiresIn: "1 days",
+      }
+    );
+
+    return {
+      id: findedUserByEmail.id,
+      name: findedUserByEmail.name,
+      email: findedUserByEmail.email,
+      photo: findedUserByEmail.photo_url,
+      access_token,
+    };
   }
 }
 
