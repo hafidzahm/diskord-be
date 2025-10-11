@@ -53,30 +53,35 @@ class UserController {
   }
 
   static async signIn(req: Request, res: Response, next: NextFunction) {
-    //validasi schema signin
+    try {
+      //validasi schema signin
 
-    const validatedData = SignInSchema.safeParse(req.body);
+      const validatedData = SignInSchema.safeParse(req.body);
 
-    if (!validatedData.success) {
-      const errorMessages = validatedData.error.issues.map(
-        (err) => `${err.path} - ${err.message}`
-        // name - name must string
-      );
+      if (!validatedData.success) {
+        const errorMessages = validatedData.error.issues.map(
+          (err) => `${err.path} - ${err.message}`
+          // name - name must string
+        );
 
-      throw {
-        type: "ZodValidationError",
-        success: false,
-        message: "Validation error",
-        details: errorMessages,
-      };
+        throw {
+          type: "ZodValidationError",
+          success: false,
+          message: "Validation error",
+          details: errorMessages,
+        };
+      }
+
+      const userSignIn = await UserService.signIn(validatedData.data);
+      return res.status(200).json({
+        success: true,
+        message: "Sign-in success",
+        data: userSignIn,
+      });
+    } catch (error) {
+      console.log(error, "=== signIn error log ===");
+      next(error);
     }
-
-    const userSignIn = await UserService.signIn(validatedData.data);
-    return res.status(200).json({
-      success: true,
-      message: "Sign-in success",
-      data: userSignIn,
-    });
   }
 }
 
