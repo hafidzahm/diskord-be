@@ -1,0 +1,53 @@
+import type { NextFunction, Request, Response } from "express";
+import { SignUpSchema } from "../utils/schema/user.schema.js";
+import fs from "fs";
+import UserService from "../services/user.service.js";
+
+class UserController {
+  static async signUp(req: Request, res: Response, next: NextFunction) {
+    try {
+      //cek req.file ada atau tidak
+      if (!req.file) {
+        throw {
+          type: "BadRequest",
+          success: false,
+          message: "Upload photo is required",
+        };
+      }
+
+      //cek req.body
+      const parse = SignUpSchema.safeParse(req.body);
+
+      if (!parse.success) {
+        const errorMessages = parse.error.issues.map(
+          (err) => `${err.path} - ${err.message}`
+        );
+
+        // hapus file yang terupload
+        fs.unlinkSync(req.file.path);
+
+        // name - name must string
+        throw {
+          type: "BadRequest",
+          success: false,
+          message: "Validation error",
+          details: errorMessages,
+        };
+      }
+
+      //bila semua validasi terpenuhi
+      const newUser = await UserService.signUp(parse.data, req.file);
+      //return
+      return res.status(201).json({
+        success: true,
+        message: "Create user success",
+        data: newUser,
+      });
+    } catch (error) {
+      console.log(error, "=== signUp error log ===");
+      next(error);
+    }
+  }
+}
+
+export default UserController;
