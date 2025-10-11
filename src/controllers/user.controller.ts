@@ -1,7 +1,7 @@
 import type { NextFunction, Request, Response } from "express";
-import { SignUpSchema } from "../utils/schema/user.schema.js";
+import { SignUpSchema } from "../utils/schema/user.schema.ts";
 import fs from "fs";
-import UserService from "../services/user.service.js";
+import UserService from "../services/user.service.ts";
 
 class UserController {
   static async signUp(req: Request, res: Response, next: NextFunction) {

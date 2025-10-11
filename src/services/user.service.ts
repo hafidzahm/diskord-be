@@ -1,6 +1,6 @@
 import "multer"; // This loads the global types
-import type { SignUpSchemaType } from "../utils/schema/user.schema.js";
-import UserRepositories from "../repositories/user.repositories.js";
+import type { SignUpSchemaType } from "../utils/schema/user.schema.ts";
+import UserRepositories from "../repositories/user.repositories.ts";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 

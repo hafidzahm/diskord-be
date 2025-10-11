@@ -1,6 +1,6 @@
 import type { RoleType } from "@prisma/client";
-import prisma from "../utils/prisma.js";
-import type { SignUpSchemaType } from "../utils/schema/user.schema.js";
+import prisma from "../utils/prisma.ts";
+import type { SignUpSchemaType } from "../utils/schema/user.schema.ts";
 
 class UserRepositories {
   static async isEmailExist(email: string) {

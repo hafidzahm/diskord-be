@@ -1,7 +1,7 @@
 import express from "express";
 import multer from "multer";
-import { storageUserPhoto } from "../utils/multer.js";
-import UserController from "../controllers/user.controller.js";
+import { storageUserPhoto } from "../utils/multer.ts";
+import UserController from "../controllers/user.controller.ts";
 const userRoutes = express.Router();
 
 const uploadPhoto = multer({

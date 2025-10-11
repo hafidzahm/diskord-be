@@ -1,6 +1,6 @@
 import { Prisma } from "@prisma/client";
 import type { NextFunction, Request, Response } from "express";
-import type { ErrorClientType } from "../types/error.client.type.js";
+import type { ErrorClientType } from "../types/error.client.type.ts";
 
 export default function errorHandler(
   err: Error,
