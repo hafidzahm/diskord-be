@@ -54,6 +54,17 @@ class UserRepositories {
       },
     });
   }
+
+  static async findResetDataByTokenId(token: string) {
+    return await prisma.passwordReset.findFirst({
+      where: {
+        token: token,
+      },
+      include: {
+        user: true,
+      },
+    });
+  }
 }
 
 export default UserRepositories;
