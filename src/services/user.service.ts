@@ -118,14 +118,12 @@ class UserService {
 
   static async mailtrapSend(email: string, token: string) {
     try {
-      await mailtrap.testing
-        .send({
-          from: { email: "mail@example.com" },
-          to: [{ email: email }],
-          subject: "Reset Password",
-          text: `Berikut link untuk reset password anda: ${token}`,
-        })
-        .then(console.log, console.error);
+      await mailtrap.testing.send({
+        from: { email: "mail@example.com" },
+        to: [{ email: email }],
+        subject: "Reset Password",
+        text: `Berikut link untuk reset password anda: ${token}`,
+      });
     } catch (error) {
       console.log(error, "<--- mailtrapError");
     }
