@@ -83,6 +83,39 @@ class UserController {
       next(error);
     }
   }
+
+  static async getEmailReset(req: Request, res: Response, next: NextFunction) {
+    try {
+      //pilih emailnya aja dari signinschema
+      const validatedData = SignInSchema.pick({ email: true }).safeParse(
+        req.body
+      );
+
+      if (!validatedData.success) {
+        const errorMessages = validatedData.error.issues.map(
+          (err) => `${err.path} - ${err.message}`
+          // name - name must string
+        );
+
+        throw {
+          type: "ZodValidationError",
+          success: false,
+          message: "Validation error",
+          details: errorMessages,
+        };
+      }
+
+      await UserService.getEmailReset(validatedData.data.email);
+
+      return res.status(200).json({
+        success: true,
+        message: "Email password reset has sent",
+      });
+    } catch (error) {
+      console.log("---getEmailReset error log---");
+      next(error);
+    }
+  }
 }
 
 export default UserController;
