@@ -129,7 +129,20 @@ class UserService {
     }
   }
 
-  static async updatePassword(token: string) {}
+  static async updatePassword(token: string) {
+    const tokenData = await UserRepositories.findResetDataByTokenId(token);
+    if (!tokenData) {
+      console.log("Invalid token data");
+
+      throw {
+        type: "NotFound",
+        success: false,
+        message: "Invalid token data",
+      };
+    }
+
+    // const updatePassword =
+  }
 }
 
 export default UserService;
