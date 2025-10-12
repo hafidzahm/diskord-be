@@ -34,6 +34,16 @@ export default function errorHandler(
     });
   }
 
+  if ((err as ErrorClientType).type === "NotFound") {
+    console.log("===BadRequest===");
+
+    deletePhoto(req.file?.path as string);
+    return res.status(404).json({
+      success: (err as ErrorClientType).success,
+      message: (err as ErrorClientType).message,
+    });
+  }
+
   if ((err as ErrorClientType).type === "ZodValidationError") {
     console.log("===ZodValidationError===");
 
