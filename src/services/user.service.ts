@@ -124,7 +124,6 @@ class UserService {
           to: [{ email: email }],
           subject: "Reset Password",
           text: `Berikut link untuk reset password anda: ${token}`,
-          category: "Integration Test",
         })
         .then(console.log, console.error);
     } catch (error) {
