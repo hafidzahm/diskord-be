@@ -106,21 +106,30 @@ class UserService {
       console.log("Inputted email not found");
 
       throw {
-        type: "AuthenticationError",
+        type: "NotFound",
         success: false,
-        message: "Invalid email/ password",
+        message: "Invalid email",
       };
     }
     const data = await UserRepositories.createPasswordReset(email);
-    await mailtrap.testing
-      .send({
-        from: { email: "hafizhahm123@gmail.com" },
-        to: [{ email: email }],
-        subject: "Reset Password",
-        text: `Berikut link untuk reset password anda: ${data.token}`,
-        category: "Integration Test",
-      })
-      .then(console.log, console.error);
+
+    return await this.mailtrapSend(email, data.token);
+  }
+
+  static async mailtrapSend(email: string, token: string) {
+    try {
+      await mailtrap.testing
+        .send({
+          from: { email: "mail@example.com" },
+          to: [{ email: email }],
+          subject: "Reset Password",
+          text: `Berikut link untuk reset password anda: ${token}`,
+          category: "Integration Test",
+        })
+        .then(console.log, console.error);
+    } catch (error) {
+      console.log(error, "<--- mailtrapError");
+    }
   }
 }
 
