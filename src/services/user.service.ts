@@ -128,6 +128,8 @@ class UserService {
       console.log(error, "<--- mailtrapError");
     }
   }
+
+  static async updatePassword(token: string) {}
 }
 
 export default UserService;
