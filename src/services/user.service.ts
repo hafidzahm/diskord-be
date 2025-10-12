@@ -6,6 +6,7 @@ import type {
 import UserRepositories from "../repositories/user.repositories.ts";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { mailtrap } from "../utils/mailtrap.ts";
 
 class UserService {
   static async signUp(data: SignUpSchemaType, file: Express.Multer.File) {
@@ -94,6 +95,40 @@ class UserService {
       photo: findedUserByEmail.photo_url,
       access_token,
     };
+  }
+
+  static async getEmailReset(email: string) {
+    const isEmailExist = await UserRepositories.isEmailExist(email);
+    console.log(isEmailExist, "<--- emailFoundCount");
+
+    //cek apakah email yang diinputkan user ada dan dicount
+    if (isEmailExist === 0) {
+      console.log("Inputted email not found");
+
+      throw {
+        type: "NotFound",
+        success: false,
+        message: "Invalid email",
+      };
+    }
+    const data = await UserRepositories.createPasswordReset(email);
+
+    return await this.mailtrapSend(email, data.token);
+  }
+
+  static async mailtrapSend(email: string, token: string) {
+    try {
+      await mailtrap.testing
+        .send({
+          from: { email: "mail@example.com" },
+          to: [{ email: email }],
+          subject: "Reset Password",
+          text: `Berikut link untuk reset password anda: ${token}`,
+        })
+        .then(console.log, console.error);
+    } catch (error) {
+      console.log(error, "<--- mailtrapError");
+    }
   }
 }
 
