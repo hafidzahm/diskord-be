@@ -1,6 +1,7 @@
 import type { RoleType } from "@prisma/client";
 import prisma from "../utils/prisma.ts";
 import type { SignUpSchemaType } from "../utils/schema/user.schema.ts";
+import crypto from "node:crypto";
 
 class UserRepositories {
   static async isEmailExist(email: string) {
@@ -36,6 +37,20 @@ class UserRepositories {
     return await prisma.user.findFirstOrThrow({
       where: {
         email: email,
+      },
+    });
+  }
+
+  static async createPasswordReset(email: string) {
+    //cari user lewat email
+    const user = await this.findUserByEmail(email);
+    //random byte
+    const token = crypto.randomBytes(32).toString("hex");
+
+    return await prisma.passwordReset.create({
+      data: {
+        UserId: user.id,
+        token: token,
       },
     });
   }
