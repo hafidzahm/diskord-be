@@ -116,6 +116,12 @@ class UserController {
       next(error);
     }
   }
+
+  static async updatePassword(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {}
 }
 
 export default UserController;
