@@ -1,8 +1,11 @@
-import type { Request, Response, NextFunction } from "express";
+import type { Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
+import UserRepositories from "../repositories/user.repositories.ts";
+import type { CustomJwtPayload } from "../types/payload.type.ts";
+import type { CustomRequest } from "../types/custom.request.type.ts";
 //AuthMiddleware
-export default function AuthMiddleware(
-  req: Request,
+export default async function AuthMiddleware(
+  req: CustomRequest,
   res: Response,
   next: NextFunction
 ) {
@@ -33,6 +36,23 @@ export default function AuthMiddleware(
   console.log(decoded, "<---- decoded");
 
   //find user by id, id founded by decoded.id
+  const userId = (decoded as CustomJwtPayload).id;
+  const user = await UserRepositories.findUserById(userId);
+  console.log(user, "<---- findedUser");
+  if (!user) {
+    throw {
+      type: "AuthenticationError",
+      success: false,
+      message: "Invalid token",
+    };
+  }
+
+  req.user = {
+    id: user.id,
+    email: user.email,
+    name: user.name,
+    role: user.role.role,
+  };
 
   next();
 }
