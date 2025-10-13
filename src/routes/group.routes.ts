@@ -20,15 +20,16 @@ const uploadFreeGroupPhoto = multer({
 
 const uploadPaidGroupPhoto = multer({
   storage: storagePaidGroupPhoto,
-  fileFilter(req, file, callback) {
-    if (file.filename === "assets") {
-      callback(null, true);
-    }
-    if (file.mimetype.startsWith("image/")) {
-      callback(null, true);
-    }
-    callback(null, false);
-  },
+
+  // fileFilter(req, file, callback) {
+  //   if (file.filename === "assets") {
+  //     callback(null, true);
+  //   }
+  //   if (file.mimetype.startsWith("image/")) {
+  //     callback(null, true);
+  //   }
+  //   callback(null, false);
+  // },
 });
 
 groupRoutes.post(
