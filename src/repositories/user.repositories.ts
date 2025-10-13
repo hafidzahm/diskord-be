@@ -76,6 +76,14 @@ class UserRepositories {
       },
     });
   }
+
+  static async deleteTokenResetById(tokenId: string) {
+    return prisma.passwordReset.delete({
+      where: {
+        id: tokenId,
+      },
+    });
+  }
 }
 
 export default UserRepositories;
