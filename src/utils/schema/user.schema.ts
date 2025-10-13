@@ -16,7 +16,10 @@ export const UpdatePasswordSchema = z
     password: z.string(),
     confirmPassword: z.string(),
   })
-  .refine((data) => data.password === data.confirmPassword);
+  .refine((data) => data.password === data.confirmPassword, {
+    error: "Password not match",
+    path: ["confirmPassword"],
+  });
 
 export type SignUpSchemaType = z.infer<typeof SignUpSchema>;
 export type SignInSchemaType = z.infer<typeof SignInSchema>;
