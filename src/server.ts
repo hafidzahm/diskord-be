@@ -4,6 +4,7 @@ import cors from "cors";
 import bodyParser from "body-parser";
 import userRoutes from "./routes/user.routes.ts";
 import errorHandler from "./middlewares/errorHandler.ts";
+import groupRoute from "./routes/group.routes.ts";
 const app = express();
 const port = 3000;
 
@@ -16,6 +17,7 @@ app.get("/", (req: Request, res: Response) => {
 });
 
 app.use("/api", userRoutes);
+app.use("/api", groupRoute);
 //=====ERROR HANDLER MIDDLEWARE====
 app.use(errorHandler);
 app.listen(port, () => {
