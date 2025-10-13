@@ -1,5 +1,9 @@
 import type { NextFunction, Request, Response } from "express";
-import { SignInSchema, SignUpSchema } from "../utils/schema/user.schema.ts";
+import {
+  SignInSchema,
+  SignUpSchema,
+  UpdatePasswordSchema,
+} from "../utils/schema/user.schema.ts";
 import fs from "fs";
 import UserService from "../services/user.service.ts";
 import deletePhoto from "../utils/deletePhoto.ts";
@@ -117,11 +121,41 @@ class UserController {
     }
   }
 
-  static async updatePassword(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) {}
+  static async updatePassword(req: Request, res: Response, next: NextFunction) {
+    try {
+      //validasi schema
+      const { tokenId } = req?.params;
+      const validatedData = UpdatePasswordSchema.safeParse(req.body);
+
+      if (!validatedData.success) {
+        const errorMessages = validatedData.error.issues.map(
+          (err) => `${err.path} - ${err.message}`
+          // name - name must string
+        );
+
+        throw {
+          type: "ZodValidationError",
+          success: false,
+          message: "Validation error",
+          details: errorMessages,
+        };
+      }
+
+      await UserService.updatePassword(
+        tokenId as string,
+        validatedData.data.confirmPassword
+      );
+
+      return res.status(200).json({
+        success: true,
+        message: "Reset password success",
+      });
+    } catch (error) {
+      console.log("updatePassword error");
+
+      next(error);
+    }
+  }
 }
 
 export default UserController;
