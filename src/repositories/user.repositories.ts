@@ -91,6 +91,9 @@ class UserRepositories {
       where: {
         id: id as string,
       },
+      include: {
+        role: true,
+      },
     });
   }
 }
