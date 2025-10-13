@@ -1,7 +1,10 @@
 import type { Response, NextFunction } from "express";
 import GroupService from "../services/group.service.ts";
 import type { CustomRequest } from "../types/custom.request.type.ts";
-import { createFreeGroupSchema } from "../utils/schema/group.schema.ts";
+import {
+  createFreeGroupSchema,
+  createPaidGroupSchema,
+} from "../utils/schema/group.schema.ts";
 
 class GroupController {
   static async createFreeGroup(
@@ -9,41 +12,106 @@ class GroupController {
     res: Response,
     next: NextFunction
   ) {
-    const validatedData = createFreeGroupSchema.safeParse(req.body);
-    if (!validatedData.success) {
-      const errorMessages = validatedData.error.issues.map(
-        (err) => `${err.path} - ${err.message}`
-        // name - name must string
+    try {
+      const validatedData = createFreeGroupSchema.safeParse(req.body);
+      if (!validatedData.success) {
+        const errorMessages = validatedData.error.issues.map(
+          (err) => `${err.path} - ${err.message}`
+          // name - name must string
+        );
+
+        throw {
+          type: "ZodValidationError",
+          success: false,
+          message: "Validation error",
+          details: errorMessages,
+        };
+      }
+
+      // validasi req.file
+      if (!req.file) {
+        throw {
+          type: "BadRequest",
+          success: false,
+          message: "Image file required",
+        };
+      }
+
+      const group = await GroupService.createFreeGroup(
+        validatedData.data,
+        req.file.filename,
+        req?.user?.id as string
       );
 
-      throw {
-        type: "ZodValidationError",
-        success: false,
-        message: "Validation error",
-        details: errorMessages,
-      };
+      return res.status(201).json({
+        success: true,
+        message: "Free group created",
+        data: group,
+      });
+    } catch (error) {
+      next(error);
     }
+  }
 
-    // validasi req.file
-    if (!req.file) {
-      throw {
-        type: "BadRequest",
-        success: false,
-        message: "Image file required",
+  static async createPaidGroup(
+    req: CustomRequest,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      const validatedData = createPaidGroupSchema.safeParse(req.body);
+      if (!validatedData.success) {
+        const errorMessages = validatedData.error.issues.map(
+          (err) => `${err.path} - ${err.message}`
+          // name - name must string
+        );
+
+        throw {
+          type: "ZodValidationError",
+          success: false,
+          message: "Validation error",
+          details: errorMessages,
+        };
+      }
+
+      const file = req.files as {
+        photo?: Express.Multer.File[];
+        assets?: Express.Multer.File[];
       };
+
+      // validasi req.file
+      if (!file.photo) {
+        throw {
+          type: "BadRequest",
+          success: false,
+          message: "Image file required",
+        };
+      }
+
+      if (!file.assets) {
+        throw {
+          type: "BadRequest",
+          success: false,
+          message: "Assets file required",
+        };
+      }
+
+      const assets = file.assets.map((asset) => asset.filename); //looping
+      const group = await GroupService.createPaidGroup(
+        validatedData.data,
+        file?.photo[0]?.filename as string,
+        req?.user?.id as string,
+        assets
+      );
+
+      return res.status(201).json({
+        success: true,
+        message: "Paid group created",
+        data: group,
+      });
+    } catch (error) {
+      next(error);
     }
-
-    const group = await GroupService.createFreeGroup(
-      validatedData.data,
-      req.file.filename,
-      req?.user?.id as string
-    );
-
-    return res.status(201).json({
-      success: true,
-      message: "Free group created",
-      data: group,
-    });
   }
 }
 export default GroupController;
