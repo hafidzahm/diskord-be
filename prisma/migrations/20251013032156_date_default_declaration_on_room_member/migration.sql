@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "RoomMembers" ALTER COLUMN "joined_at" SET DEFAULT CURRENT_TIMESTAMP;
