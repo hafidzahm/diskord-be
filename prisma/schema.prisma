@@ -68,7 +68,7 @@ model Group {
   price        Int
   created_at   DateTime      @default(now())
   //
-  RoomId       String
+  RoomId       String        @unique
   room         Room          @relation(fields: [RoomId], references: [id])
   //
   assets       GroupAsset[]
@@ -97,7 +97,7 @@ model Room {
   creator    User     @relation("UserCreateRelation", fields: [CreatorId], references: [id])
   //
 
-  groups       Group[]
+  groups       Group?
   room_members RoomMember[]
   messages     RoomMessage[]
 
