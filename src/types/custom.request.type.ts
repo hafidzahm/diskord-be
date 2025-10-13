@@ -9,5 +9,5 @@ type User = {
 };
 
 export interface CustomRequest extends Request {
-  user: User | null;
+  user?: User | null;
 }
