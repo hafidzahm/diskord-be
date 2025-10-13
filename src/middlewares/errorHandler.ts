@@ -2,6 +2,7 @@ import { Prisma } from "@prisma/client";
 import type { NextFunction, Request, Response } from "express";
 import type { ErrorClientType } from "../types/error.client.type.ts";
 import deletePhoto from "../utils/deletePhoto.ts";
+import pkg from "jsonwebtoken";
 
 export default function errorHandler(
   err: Error,
@@ -24,6 +25,15 @@ export default function errorHandler(
     });
   }
 
+  const { JsonWebTokenError } = pkg;
+  if (err instanceof JsonWebTokenError) {
+    console.log(err, "<----JWTERROR");
+    return res.status(401).json({
+      success: false,
+      message: err.message,
+    });
+  }
+
   if ((err as ErrorClientType).type === "BadRequest") {
     console.log("===BadRequest===");
 
@@ -35,7 +45,7 @@ export default function errorHandler(
   }
 
   if ((err as ErrorClientType).type === "NotFound") {
-    console.log("===BadRequest===");
+    console.log("===NotFound===");
 
     deletePhoto(req.file?.path as string);
     return res.status(404).json({
@@ -44,9 +54,20 @@ export default function errorHandler(
     });
   }
 
+  if ((err as ErrorClientType).type === "AuthenticationError") {
+    console.log("===AuthenticationError===");
+
+    deletePhoto(req.file?.path as string);
+    return res.status(401).json({
+      success: (err as ErrorClientType).success,
+      message: (err as ErrorClientType).message,
+    });
+  }
+
   if ((err as ErrorClientType).type === "ZodValidationError") {
     console.log("===ZodValidationError===");
 
+    deletePhoto(req.file?.path as string);
     return res.status(400).json({
       success: (err as ErrorClientType).success,
       message: (err as ErrorClientType).message,

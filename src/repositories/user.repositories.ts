@@ -2,6 +2,7 @@ import type { RoleType } from "@prisma/client";
 import prisma from "../utils/prisma.ts";
 import type { SignUpSchemaType } from "../utils/schema/user.schema.ts";
 import crypto from "node:crypto";
+import type { JwtPayload } from "jsonwebtoken";
 
 class UserRepositories {
   static async isEmailExist(email: string) {
@@ -78,9 +79,20 @@ class UserRepositories {
   }
 
   static async deleteTokenResetById(tokenId: string) {
-    return prisma.passwordReset.delete({
+    return await prisma.passwordReset.delete({
       where: {
         id: tokenId,
+      },
+    });
+  }
+
+  static async findUserById(id: string | JwtPayload) {
+    return await prisma.user.findFirstOrThrow({
+      where: {
+        id: id as string,
+      },
+      include: {
+        role: true,
       },
     });
   }
