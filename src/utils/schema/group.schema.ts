@@ -5,4 +5,10 @@ export const createFreeGroupSchema = z.object({
   about: z.string(),
 });
 
+export const createPaidGroupSchema = createFreeGroupSchema.extend({
+  paid: z.string(),
+  benefit: z.array(z.string()).min(1),
+});
+
 export type CreateGroupSchemaType = z.infer<typeof createFreeGroupSchema>;
+export type CreatePaidGroupSchemaType = z.infer<typeof createPaidGroupSchema>;
