@@ -2,6 +2,7 @@ import { Prisma } from "@prisma/client";
 import type { NextFunction, Request, Response } from "express";
 import type { ErrorClientType } from "../types/error.client.type.ts";
 import deletePhoto from "../utils/deletePhoto.ts";
+import pkg from "jsonwebtoken";
 
 export default function errorHandler(
   err: Error,
@@ -19,6 +20,15 @@ export default function errorHandler(
     console.log("===PrismaClientKnownRequestError===");
 
     return res.status(400).json({
+      success: false,
+      message: err.message,
+    });
+  }
+
+  const { JsonWebTokenError } = pkg;
+  if (err instanceof JsonWebTokenError) {
+    console.log(err, "<----JWTERROR");
+    return res.status(401).json({
       success: false,
       message: err.message,
     });
