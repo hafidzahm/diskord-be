@@ -32,5 +32,7 @@ export default function AuthMiddleware(
 
   console.log(decoded, "<---- decoded");
 
+  //find user by id, id founded by decoded.id
+
   next();
 }

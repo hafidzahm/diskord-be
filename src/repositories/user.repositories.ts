@@ -78,9 +78,17 @@ class UserRepositories {
   }
 
   static async deleteTokenResetById(tokenId: string) {
-    return prisma.passwordReset.delete({
+    return await prisma.passwordReset.delete({
       where: {
         id: tokenId,
+      },
+    });
+  }
+
+  static async findUserById(id: string) {
+    return await prisma.user.findFirstOrThrow({
+      where: {
+        id: id,
       },
     });
   }
