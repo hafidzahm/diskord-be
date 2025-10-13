@@ -3,7 +3,7 @@ import GroupController from "../controllers/group.controller.ts";
 import AuthMiddleware from "../middlewares/auth.middleware.ts";
 import multer from "multer";
 import { storageGroupPhoto } from "../utils/multer.ts";
-const groupRoute = express.Router();
+const groupRoutes = express.Router();
 
 const uploadGroupPhoto = multer({
   storage: storageGroupPhoto,
@@ -15,11 +15,11 @@ const uploadGroupPhoto = multer({
   },
 });
 
-groupRoute.post(
+groupRoutes.post(
   "/group/free",
   AuthMiddleware,
   uploadGroupPhoto.single("photo"),
   GroupController.createFreeGroup
 );
 
-export default groupRoute;
+export default groupRoutes;
