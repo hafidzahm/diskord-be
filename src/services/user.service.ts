@@ -129,7 +129,7 @@ class UserService {
     }
   }
 
-  static async updatePassword(token: string) {
+  static async updatePassword(token: string, password: string) {
     const tokenData = await UserRepositories.findResetDataByTokenId(token);
     if (!tokenData) {
       console.log("Invalid token data");
@@ -141,7 +141,10 @@ class UserService {
       };
     }
 
-    // const updatePassword =
+    const hashedPassword = bcrypt.hashSync(password, 12);
+    await UserRepositories.updatePassword(tokenData.user.id, hashedPassword);
+
+    return true;
   }
 }
 
