@@ -2,6 +2,7 @@ import type { RoleType } from "@prisma/client";
 import prisma from "../utils/prisma.ts";
 import type { SignUpSchemaType } from "../utils/schema/user.schema.ts";
 import crypto from "node:crypto";
+import type { JwtPayload } from "jsonwebtoken";
 
 class UserRepositories {
   static async isEmailExist(email: string) {
@@ -85,10 +86,10 @@ class UserRepositories {
     });
   }
 
-  static async findUserById(id: string) {
+  static async findUserById(id: string | JwtPayload) {
     return await prisma.user.findFirstOrThrow({
       where: {
-        id: id,
+        id: id as string,
       },
     });
   }
