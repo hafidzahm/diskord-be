@@ -143,6 +143,7 @@ class UserService {
 
     const hashedPassword = bcrypt.hashSync(password, 12);
     await UserRepositories.updatePassword(tokenData.user.id, hashedPassword);
+    await UserRepositories.deleteTokenResetById(tokenData.id);
 
     return true;
   }
