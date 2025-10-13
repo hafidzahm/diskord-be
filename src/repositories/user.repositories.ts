@@ -54,6 +54,36 @@ class UserRepositories {
       },
     });
   }
+
+  static async findResetDataByTokenId(token: string) {
+    return await prisma.passwordReset.findFirst({
+      where: {
+        token: token,
+      },
+      include: {
+        user: true,
+      },
+    });
+  }
+
+  static async updatePassword(userId: string, password: string) {
+    return await prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        password,
+      },
+    });
+  }
+
+  static async deleteTokenResetById(tokenId: string) {
+    return prisma.passwordReset.delete({
+      where: {
+        id: tokenId,
+      },
+    });
+  }
 }
 
 export default UserRepositories;

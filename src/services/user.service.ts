@@ -128,6 +128,25 @@ class UserService {
       console.log(error, "<--- mailtrapError");
     }
   }
+
+  static async updatePassword(token: string, password: string) {
+    const tokenData = await UserRepositories.findResetDataByTokenId(token);
+    if (!tokenData) {
+      console.log("Invalid token data");
+
+      throw {
+        type: "NotFound",
+        success: false,
+        message: "Invalid token data",
+      };
+    }
+
+    const hashedPassword = bcrypt.hashSync(password, 12);
+    await UserRepositories.updatePassword(tokenData.user.id, hashedPassword);
+    await UserRepositories.deleteTokenResetById(tokenData.id);
+
+    return true;
+  }
 }
 
 export default UserService;
