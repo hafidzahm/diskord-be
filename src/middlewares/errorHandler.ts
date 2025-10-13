@@ -10,11 +10,24 @@ export default function errorHandler(
   res: Response,
   next: NextFunction
 ) {
+  const file = req.files as {
+    photo?: Express.Multer.File[];
+    assets?: Express.Multer.File[];
+  };
+
+  const path = req?.file?.path;
+  const photoPath = file?.photo?.map((photo) => photo.path)[0];
+  const pathMap = file?.assets?.map((asset) => asset.path);
+  const assetPath = pathMap;
+
+  const pathSelectValidation =
+    (path as string) || (photoPath as string) || (assetPath as string[]);
+
   const catchError = err;
   console.log(`===${(err as ErrorClientType).type}===`);
 
   console.log(catchError, "=== middleware error ===");
-  console.log(req.file?.path, "<--- filePathDetected");
+  console.log(pathSelectValidation, "<--- filePathDetected");
 
   if (err instanceof Prisma.PrismaClientKnownRequestError) {
     console.log("===PrismaClientKnownRequestError===");
@@ -37,7 +50,7 @@ export default function errorHandler(
   if ((err as ErrorClientType).type === "BadRequest") {
     console.log("===BadRequest===");
 
-    deletePhoto(req.file?.path as string);
+    deletePhoto(pathSelectValidation);
     return res.status(400).json({
       success: (err as ErrorClientType).success,
       message: (err as ErrorClientType).message,
@@ -47,7 +60,7 @@ export default function errorHandler(
   if ((err as ErrorClientType).type === "NotFound") {
     console.log("===NotFound===");
 
-    deletePhoto(req.file?.path as string);
+    deletePhoto(pathSelectValidation);
     return res.status(404).json({
       success: (err as ErrorClientType).success,
       message: (err as ErrorClientType).message,
@@ -57,7 +70,7 @@ export default function errorHandler(
   if ((err as ErrorClientType).type === "AuthenticationError") {
     console.log("===AuthenticationError===");
 
-    deletePhoto(req.file?.path as string);
+    deletePhoto(pathSelectValidation);
     return res.status(401).json({
       success: (err as ErrorClientType).success,
       message: (err as ErrorClientType).message,
@@ -67,7 +80,7 @@ export default function errorHandler(
   if ((err as ErrorClientType).type === "ZodValidationError") {
     console.log("===ZodValidationError===");
 
-    deletePhoto(req.file?.path as string);
+    deletePhoto(pathSelectValidation);
     return res.status(400).json({
       success: (err as ErrorClientType).success,
       message: (err as ErrorClientType).message,

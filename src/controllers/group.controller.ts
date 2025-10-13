@@ -5,6 +5,7 @@ import {
   createFreeGroupSchema,
   createPaidGroupSchema,
 } from "../utils/schema/group.schema.ts";
+import deletePhoto from "../utils/deletePhoto.ts";
 
 class GroupController {
   static async createFreeGroup(
@@ -79,8 +80,19 @@ class GroupController {
         assets?: Express.Multer.File[];
       };
 
+      console.log(file, "<---- file");
+
       // validasi req.file
       if (!file.photo) {
+        //hapus file assets jika dimasukan
+        // const pathAssets = file.assets?.map((asset) => asset.path);
+        // if ((pathAssets as string[]).length > 0) {
+        //   for (const path of pathAssets as string[]) {
+        //     deletePhoto(path);
+        //   }
+        // }
+        // deletePhoto(pathAssets as string[], "assets");
+
         throw {
           type: "BadRequest",
           success: false,
@@ -89,6 +101,10 @@ class GroupController {
       }
 
       if (!file.assets) {
+        // const path = file?.photo[0]?.path;
+        //jika ada file foto, hapus ftonya
+        // file.photo && deletePhoto(path as string, "photo");
+
         throw {
           type: "BadRequest",
           success: false,
@@ -96,7 +112,7 @@ class GroupController {
         };
       }
 
-      const assets = file.assets.map((asset) => asset.filename); //looping
+      const assets = file?.assets?.map((asset) => asset.filename); //looping
       const group = await GroupService.createPaidGroup(
         validatedData.data,
         file?.photo[0]?.filename as string,
