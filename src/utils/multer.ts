@@ -12,3 +12,16 @@ export const storageUserPhoto = multer.diskStorage({
     cb(null, filename);
   },
 });
+
+export const storageGroupPhoto = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "public/assets/uploads/groups/photos");
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+
+    const extension = file.mimetype.split("/")[1]; // images/png -> [images, png]
+    const filename = `photo-${uniqueSuffix}.${extension}`;
+    cb(null, filename);
+  },
+});
