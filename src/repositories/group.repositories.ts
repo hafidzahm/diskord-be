@@ -50,8 +50,7 @@ class GroupRepositories {
 
   static async updateGroupById(
     data: UpdateFreeGroupSchemaType,
-    groupId: string,
-    photo?: string
+    groupId: string
   ) {
     return prisma.group.update({
       where: {
@@ -60,6 +59,16 @@ class GroupRepositories {
       data: {
         name: data.name,
         about: data.about,
+      },
+    });
+  }
+
+  static async updatePhotoGroup(groupId: string, photo?: string) {
+    return await prisma.group.update({
+      where: {
+        id: groupId,
+      },
+      data: {
         photo: photo ?? "",
       },
     });

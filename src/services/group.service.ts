@@ -7,43 +7,10 @@ import type {
 } from "../utils/schema/group.schema.ts";
 
 import fs from "node:fs";
-import path from "node:path";
 
 class GroupService {
-  static async createFreeGroup(
-    data: CreateGroupSchemaType,
-    photo: string,
-    userId: string
-  ) {
-    const group = GroupRepositories.createFreeGroup(data, photo, userId);
-    return group;
-  }
-
-  static async createPaidGroup(
-    data: CreatePaidGroupSchemaType,
-    photo: string,
-    userId: string,
-    assets?: string[]
-  ) {
-    const group = await GroupRepositories.createPaidGroup(
-      data,
-      userId,
-      photo,
-      assets
-    );
-
-    return group;
-  }
-
-  // !pisahkan update foto dan data lain
-
-  static async updateFreeGroup(
-    data: UpdateFreeGroupSchemaType,
-    groupId: string,
-    photo?: string,
-    path?: string
-  ) {
-    path = "public/assets/uploads/groups/photos";
+  static async updatePhotoGroup(groupId: string, photo?: string) {
+    const path = "public/assets/uploads/groups/photos";
     // cek dulu grupnya ada ga
     const findedGroup = await GroupRepositories.findGroupById(groupId);
     if (!findedGroup) {
@@ -76,7 +43,51 @@ class GroupService {
       path: `${path}/${findedGroup.photo}`,
     });
 
-    const group = await GroupRepositories.updateGroupById(data, groupId, photo);
+    const group = await GroupRepositories.updatePhotoGroup(groupId, photo);
+    return group;
+  }
+
+  static async createFreeGroup(
+    data: CreateGroupSchemaType,
+    photo: string,
+    userId: string
+  ) {
+    const group = GroupRepositories.createFreeGroup(data, photo, userId);
+    return group;
+  }
+
+  static async createPaidGroup(
+    data: CreatePaidGroupSchemaType,
+    photo: string,
+    userId: string,
+    assets?: string[]
+  ) {
+    const group = await GroupRepositories.createPaidGroup(
+      data,
+      userId,
+      photo,
+      assets
+    );
+
+    return group;
+  }
+
+  // !pisahkan update foto dan data lain
+
+  static async updateFreeGroup(
+    data: UpdateFreeGroupSchemaType,
+    groupId: string
+  ) {
+    // cek dulu grupnya ada ga
+    const findedGroup = await GroupRepositories.findGroupById(groupId);
+    if (!findedGroup) {
+      throw {
+        type: "NotFound",
+        success: false,
+        message: "Group not found",
+      };
+    }
+    const group = await GroupRepositories.updateGroupById(data, groupId);
     return group;
   }
 

@@ -52,8 +52,14 @@ groupRoutes.post(
 groupRoutes.put(
   "/groups/free/:groupId",
   AuthMiddleware,
-  uploadFreeGroupPhoto.single("photo"),
   GroupController.updateFreeGroup
+);
+
+groupRoutes.put(
+  "/groups/photos/:groupId",
+  AuthMiddleware,
+  uploadFreeGroupPhoto.single("photo"),
+  GroupController.updateGroupPhoto
 );
 
 groupRoutes.get(

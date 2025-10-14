@@ -151,22 +151,40 @@ class GroupController {
         };
       }
 
-      const file = req?.file?.filename;
-      console.log(req?.file, "<----- file");
-      const destination = req?.file?.destination;
-
       const { groupId } = req?.params;
 
       const group = await GroupService.updateFreeGroup(
         validatedData.data,
-        groupId as string,
-        file,
-        destination
+        groupId as string
       );
 
       return res.status(200).json({
         success: true,
         message: "Free group updated",
+        data: group,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async updateGroupPhoto(
+    req: CustomRequest,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      const file = req?.file?.filename;
+      console.log(req?.file, "<----- file");
+      const { groupId } = req.params;
+      const group = await GroupService.updatePhotoGroup(
+        groupId as string,
+        file
+      );
+
+      return res.status(200).json({
+        success: true,
+        message: "Group photo updated",
         data: group,
       });
     } catch (error) {
