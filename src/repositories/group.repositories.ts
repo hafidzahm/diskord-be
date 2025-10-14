@@ -2,6 +2,7 @@ import prisma from "../utils/prisma.ts";
 import type {
   CreateGroupSchemaType,
   CreatePaidGroupSchemaType,
+  UpdateFreeGroupSchemaType,
 } from "../utils/schema/group.schema.ts";
 import UserRepositories from "./user.repositories.ts";
 
@@ -35,6 +36,31 @@ class GroupRepositories {
             },
           },
         },
+      },
+    });
+  }
+
+  static async findGroupById(id: string) {
+    return await prisma.group.findFirstOrThrow({
+      where: {
+        id,
+      },
+    });
+  }
+
+  static async updateGroupById(
+    data: UpdateFreeGroupSchemaType,
+    groupId: string,
+    photo?: string
+  ) {
+    return prisma.group.update({
+      where: {
+        id: groupId,
+      },
+      data: {
+        name: data.name,
+        about: data.about,
+        photo: photo ?? "",
       },
     });
   }
