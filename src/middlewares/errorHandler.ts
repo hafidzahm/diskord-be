@@ -16,14 +16,24 @@ export default function errorHandler(
   };
 
   const path = req?.file?.path;
-  const photoPath = file?.photo?.map((photo) => photo.path)[0];
-  const pathMap = file?.assets?.map((asset) => asset.path);
-  const assetPath = pathMap;
+  const photoPath = Array.isArray(file?.photo)
+    ? file?.photo?.map((photo) => photo.path)
+    : undefined;
+
+  const pathMap = Array.isArray(file?.assets)
+    ? file?.assets?.map((asset) => asset.path)
+    : undefined;
+
+  console.log(typeof file?.assets, "<---pathAssetsMapped");
 
   // !BUG: VALIDASI DELETE PHOTO TIDAK TERHAPUS KETIKA ZOD ERROR
-  const pathSelectValidation =
-    (path as string) || (photoPath as string) || (assetPath as string[]);
+  const pathSelect = [path, ...(photoPath ?? []), ...(pathMap ?? [])];
 
+  const pathSelectValidation = pathSelect.filter((path) => {
+    if (typeof path !== undefined) {
+      return path;
+    }
+  });
   const catchError = err;
   console.log(`===${(err as ErrorClientType).type}===`);
 

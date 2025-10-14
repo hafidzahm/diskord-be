@@ -26,5 +26,6 @@ export default function deletePhoto(path: string[] | string) {
         fs.unlinkSync(path as string);
       }
     }
+    return;
   }
 }
