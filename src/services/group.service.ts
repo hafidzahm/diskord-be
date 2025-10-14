@@ -66,6 +66,11 @@ class GroupService {
     const group = await GroupRepositories.updateGroupById(data, groupId, photo);
     return group;
   }
+
+  static async findGroupById(id: string) {
+    const group = await GroupRepositories.findGroupById(id);
+    return group;
+  }
 }
 
 export default GroupService;

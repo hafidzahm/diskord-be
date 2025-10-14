@@ -169,5 +169,10 @@ class GroupController {
       next(error);
     }
   }
+
+  static async getGroupById(id: string) {
+    const group = await GroupService.findGroupById(id);
+    return group;
+  }
 }
 export default GroupController;
