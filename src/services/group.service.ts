@@ -35,6 +35,8 @@ class GroupService {
     return group;
   }
 
+  // !pisahkan update foto dan data lain
+
   static async updateFreeGroup(
     data: UpdateFreeGroupSchemaType,
     groupId: string,
