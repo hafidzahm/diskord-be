@@ -1,5 +1,5 @@
 import fs from "fs";
-export default function deletePhoto(path: string[] | string) {
+export default function deletePhoto(path: (string | undefined)[]) {
   console.log(path, "<--pathInsideDeletePhoto");
   console.log(typeof path, "<--pathInsideDeletePhoto");
 

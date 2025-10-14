@@ -26,7 +26,6 @@ export default function errorHandler(
 
   console.log(typeof file?.assets, "<---pathAssetsMapped");
 
-  // !BUG: VALIDASI DELETE PHOTO TIDAK TERHAPUS KETIKA ZOD ERROR
   const pathSelect = [path, ...(photoPath ?? []), ...(pathMap ?? [])];
 
   const pathSelectValidation = pathSelect.filter((path) => {
