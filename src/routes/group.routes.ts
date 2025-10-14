@@ -39,6 +39,13 @@ groupRoutes.post(
   GroupController.createFreeGroup
 );
 
+groupRoutes.put(
+  "/group/free/:groupId",
+  AuthMiddleware,
+  uploadFreeGroupPhoto.single("photo"),
+  GroupController.updateFreeGroup
+);
+
 groupRoutes.post(
   "/group/paid",
   AuthMiddleware,
