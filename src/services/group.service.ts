@@ -38,8 +38,10 @@ class GroupService {
   static async updateFreeGroup(
     data: UpdateFreeGroupSchemaType,
     groupId: string,
-    photo?: string
+    photo?: string,
+    path?: string
   ) {
+    path = "public/assets/uploads/groups/photos";
     // cek dulu grupnya ada ga
     const findedGroup = await GroupRepositories.findGroupById(groupId);
     if (!findedGroup) {
@@ -49,19 +51,28 @@ class GroupService {
         message: "Group not found",
       };
     }
-    if (photo) {
+    if (photo || findedGroup.photo) {
       //hapus foto sebelumnya
       const lastPhoto = findedGroup.photo;
-      const pathPhoto = path.join(
-        __dirname,
-        "/../../public/assets/uploads/groups/photos",
-        lastPhoto
-      );
+      const destination = path;
+      // __dirname now starts from public directory
+      const pathPhoto = `${destination}/${lastPhoto}`;
+      // Use a proper logging mechanism here if needed
+      console.log(pathPhoto, "<--- pathPhoto");
 
-      if (fs.existsSync(pathPhoto)) {
+      if (fs.existsSync(pathPhoto) && lastPhoto) {
+        console.log(pathPhoto, "<--- pathPhoto");
+
         deletePhoto([pathPhoto]);
       }
+      // Use a proper logging mechanism here if needed
     }
+
+    console.log({
+      inputedPhoto: photo,
+      lastPhoto: findedGroup.photo,
+      path: `${path}/${findedGroup.photo}`,
+    });
 
     const group = await GroupRepositories.updateGroupById(data, groupId, photo);
     return group;

@@ -151,13 +151,17 @@ class GroupController {
         };
       }
 
-      const file = req?.file?.filename || "";
+      const file = req?.file?.filename;
+      console.log(req?.file, "<----- file");
+      const destination = req?.file?.destination;
+
       const { groupId } = req?.params;
 
       const group = await GroupService.updateFreeGroup(
         validatedData.data,
         groupId as string,
-        file
+        file,
+        destination
       );
 
       return res.status(200).json({
@@ -170,9 +174,21 @@ class GroupController {
     }
   }
 
-  static async getGroupById(id: string) {
-    const group = await GroupService.findGroupById(id);
-    return group;
+  static async getGroupById(
+    req: CustomRequest,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      const { groupId } = req.params;
+      const group = await GroupService.findGroupById(groupId as string);
+      return res.status(200).json({
+        success: true,
+        data: group,
+      });
+    } catch (error) {
+      next(error);
+    }
   }
 }
 export default GroupController;
