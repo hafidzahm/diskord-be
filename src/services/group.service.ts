@@ -54,7 +54,7 @@ class GroupService {
       const lastPhoto = findedGroup.photo;
       const pathPhoto = path.join(
         __dirname,
-        "/public/assets/uploads/groups/photos",
+        "/../../public/assets/uploads/groups/photos",
         lastPhoto
       );
 
