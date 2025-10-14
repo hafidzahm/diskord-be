@@ -29,9 +29,7 @@ export default function errorHandler(
   const pathSelect = [path, ...(photoPath ?? []), ...(pathMap ?? [])];
 
   const pathSelectValidation = pathSelect.filter((path) => {
-    if (typeof path !== undefined) {
-      return path;
-    }
+    return path !== undefined;
   });
   const catchError = err;
   console.log(`===${(err as ErrorClientType).type}===`);

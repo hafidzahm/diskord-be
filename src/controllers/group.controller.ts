@@ -4,8 +4,8 @@ import type { CustomRequest } from "../types/custom.request.type.ts";
 import {
   createFreeGroupSchema,
   createPaidGroupSchema,
+  updateFreeGroupSchema,
 } from "../utils/schema/group.schema.ts";
-import deletePhoto from "../utils/deletePhoto.ts";
 
 class GroupController {
   static async createFreeGroup(
@@ -123,6 +123,85 @@ class GroupController {
       return res.status(201).json({
         success: true,
         message: "Paid group created",
+        data: group,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async updateFreeGroup(
+    req: CustomRequest,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      const validatedData = updateFreeGroupSchema.safeParse(req.body);
+      if (!validatedData.success) {
+        const errorMessages = validatedData.error.issues.map(
+          (err) => `${err.path} - ${err.message}`
+          // name - name must string
+        );
+
+        throw {
+          type: "ZodValidationError",
+          success: false,
+          message: "Validation error",
+          details: errorMessages,
+        };
+      }
+
+      const { groupId } = req?.params;
+
+      const group = await GroupService.updateFreeGroup(
+        validatedData.data,
+        groupId as string
+      );
+
+      return res.status(200).json({
+        success: true,
+        message: "Free group updated",
+        data: group,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async updateGroupPhoto(
+    req: CustomRequest,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      const file = req?.file?.filename;
+      console.log(req?.file, "<----- file");
+      const { groupId } = req.params;
+      const group = await GroupService.updatePhotoGroup(
+        groupId as string,
+        file
+      );
+
+      return res.status(200).json({
+        success: true,
+        message: "Group photo updated",
+        data: group,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async getGroupById(
+    req: CustomRequest,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      const { groupId } = req.params;
+      const group = await GroupService.findGroupById(groupId as string);
+      return res.status(200).json({
+        success: true,
         data: group,
       });
     } catch (error) {
