@@ -8,16 +8,32 @@ import {
 } from "../utils/schema/group.schema.ts";
 
 class GroupController {
+  static async getDiscoverGroup(
+    req: CustomRequest,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const groups = await GroupService.getDiscoverGroup();
+      return res.status(200).json({
+        success: true,
+        message: "Discover group fetched",
+        data: groups,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
   static async createFreeGroup(
     req: CustomRequest,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ) {
     try {
       const validatedData = createFreeGroupSchema.safeParse(req.body);
       if (!validatedData.success) {
         const errorMessages = validatedData.error.issues.map(
-          (err) => `${err.path} - ${err.message}`
+          (err) => `${err.path} - ${err.message}`,
           // name - name must string
         );
 
@@ -41,7 +57,7 @@ class GroupController {
       const group = await GroupService.createFreeGroup(
         validatedData.data,
         req.file.filename,
-        req?.user?.id as string
+        req?.user?.id as string,
       );
 
       return res.status(201).json({
@@ -57,13 +73,13 @@ class GroupController {
   static async createPaidGroup(
     req: CustomRequest,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ) {
     try {
       const validatedData = createPaidGroupSchema.safeParse(req.body);
       if (!validatedData.success) {
         const errorMessages = validatedData.error.issues.map(
-          (err) => `${err.path} - ${err.message}`
+          (err) => `${err.path} - ${err.message}`,
           // name - name must string
         );
 
@@ -117,7 +133,7 @@ class GroupController {
         validatedData.data,
         file?.photo[0]?.filename as string,
         req?.user?.id as string,
-        assets
+        assets,
       );
 
       return res.status(201).json({
@@ -133,13 +149,13 @@ class GroupController {
   static async updateFreeGroup(
     req: CustomRequest,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ) {
     try {
       const validatedData = updateFreeGroupSchema.safeParse(req.body);
       if (!validatedData.success) {
         const errorMessages = validatedData.error.issues.map(
-          (err) => `${err.path} - ${err.message}`
+          (err) => `${err.path} - ${err.message}`,
           // name - name must string
         );
 
@@ -155,7 +171,7 @@ class GroupController {
 
       const group = await GroupService.updateFreeGroup(
         validatedData.data,
-        groupId as string
+        groupId as string,
       );
 
       return res.status(200).json({
@@ -171,7 +187,7 @@ class GroupController {
   static async updateGroupPhoto(
     req: CustomRequest,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ) {
     try {
       const file = req?.file?.filename;
@@ -179,7 +195,7 @@ class GroupController {
       const { groupId } = req.params;
       const group = await GroupService.updatePhotoGroup(
         groupId as string,
-        file
+        file,
       );
 
       return res.status(200).json({
@@ -195,7 +211,7 @@ class GroupController {
   static async getGroupById(
     req: CustomRequest,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ) {
     try {
       const { groupId } = req.params;

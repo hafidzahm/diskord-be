@@ -16,6 +16,19 @@ const prisma = new PrismaClient().$extends({
         },
       },
     },
+    group: {
+      photo_url: {
+        needs: {
+          photo: true,
+        },
+        compute(data) {
+          if (data.photo) {
+            return `${process.env.DEFAULT_GROUP_PHOTO_URL}/${data.photo}`;
+          }
+          return null;
+        },
+      },
+    },
   },
 });
 

@@ -7,10 +7,29 @@ import type {
 import UserRepositories from "./user.repositories.ts";
 
 class GroupRepositories {
+  static async getDiscoverGroup() {
+    return await prisma.group.findMany({
+      select: {
+        photo_url: true,
+        id: true,
+        name: true,
+        type: true,
+        room: {
+          select: {
+            _count: {
+              select: {
+                messages: true,
+              },
+            },
+          },
+        },
+      },
+    });
+  }
   static async createFreeGroup(
     data: CreateGroupSchemaType,
     photo: string,
-    userId: string
+    userId: string,
   ) {
     // cari role lewat id role
     const owner = await UserRepositories.findRole("OWNER");
@@ -50,7 +69,7 @@ class GroupRepositories {
 
   static async updateGroupById(
     data: UpdateFreeGroupSchemaType,
-    groupId: string
+    groupId: string,
   ) {
     return prisma.group.update({
       where: {
@@ -78,7 +97,7 @@ class GroupRepositories {
     data: CreatePaidGroupSchemaType,
     userId: string,
     photo: string,
-    assets?: string[]
+    assets?: string[],
   ) {
     const owner = await UserRepositories.findRole("OWNER");
     const group = await prisma.group.create({

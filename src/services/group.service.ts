@@ -9,6 +9,9 @@ import type {
 import fs from "node:fs";
 
 class GroupService {
+  static async getDiscoverGroup() {
+    return await GroupRepositories.getDiscoverGroup();
+  }
   static async updatePhotoGroup(groupId: string, photo?: string) {
     const path = "public/assets/uploads/groups/photos";
     // cek dulu grupnya ada ga
@@ -50,7 +53,7 @@ class GroupService {
   static async createFreeGroup(
     data: CreateGroupSchemaType,
     photo: string,
-    userId: string
+    userId: string,
   ) {
     const group = GroupRepositories.createFreeGroup(data, photo, userId);
     return group;
@@ -60,13 +63,13 @@ class GroupService {
     data: CreatePaidGroupSchemaType,
     photo: string,
     userId: string,
-    assets?: string[]
+    assets?: string[],
   ) {
     const group = await GroupRepositories.createPaidGroup(
       data,
       userId,
       photo,
-      assets
+      assets,
     );
 
     return group;
@@ -76,7 +79,7 @@ class GroupService {
 
   static async updateFreeGroup(
     data: UpdateFreeGroupSchemaType,
-    groupId: string
+    groupId: string,
   ) {
     // cek dulu grupnya ada ga
     const findedGroup = await GroupRepositories.findGroupById(groupId);
