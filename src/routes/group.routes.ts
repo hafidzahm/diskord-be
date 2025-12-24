@@ -32,11 +32,13 @@ const uploadPaidGroupPhoto = multer({
   // },
 });
 
+groupRoutes.get("/groups", GroupController.getDiscoverGroup);
+
 groupRoutes.post(
   "/groups/free",
   AuthMiddleware,
   uploadFreeGroupPhoto.single("photo"),
-  GroupController.createFreeGroup
+  GroupController.createFreeGroup,
 );
 
 groupRoutes.post(
@@ -46,26 +48,26 @@ groupRoutes.post(
     { name: "photo", maxCount: 1 },
     { name: "assets" },
   ]),
-  GroupController.createPaidGroup
+  GroupController.createPaidGroup,
 );
 
 groupRoutes.put(
   "/groups/free/:groupId",
   AuthMiddleware,
-  GroupController.updateFreeGroup
+  GroupController.updateFreeGroup,
 );
 
 groupRoutes.put(
   "/groups/photos/:groupId",
   AuthMiddleware,
   uploadFreeGroupPhoto.single("photo"),
-  GroupController.updateGroupPhoto
+  GroupController.updateGroupPhoto,
 );
 
 groupRoutes.get(
   "/groups/search/:groupId",
   AuthMiddleware,
-  GroupController.getGroupById
+  GroupController.getGroupById,
 );
 
 export default groupRoutes;
